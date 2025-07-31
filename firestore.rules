@@ -1,0 +1,127 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isRateLimited(operation, limit) {
+      return exists(/databases/$(database)/documents/rateLimits/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/rateLimits/$(request.auth.uid)).data[operation+'Count'] > limit;
+    }
+    
+    function isRequestRecent() {
+      return request.time.toMillis() - request.resource.data.timestamp.toMillis() < 5 * 60 * 1000; // 5 minutes
+    }
+    
+    function isValidVaultData() {
+      return request.resource.data.keys().hasAll(['encryptedData', 'iv', 'authTag']) &&
+             request.resource.data.encryptedData is string &&
+             request.resource.data.iv is string &&
+             request.resource.data.authTag is string &&
+             request.resource.data.encryptedData.size() > 0 &&
+             request.resource.data.iv.size() > 0 &&
+             request.resource.data.authTag.size() > 0;
+    }
+    
+    function isValidUserData() {
+      return request.resource.data.keys().hasAll(['email', 'displayName', 'createdAt', 'autoLockTime', 'vault', 'vaultKeyHash']) &&
+             request.resource.data.email is string &&
+             request.resource.data.displayName is string &&
+             request.resource.data.createdAt is string &&
+             request.resource.data.autoLockTime is number &&
+             request.resource.data.vault is string &&
+             request.resource.data.vaultKeyHash is string;
+    }
+    
+    function isRecentTimestamp(timeValue) {
+      return timeValue.toMillis() <= request.time.toMillis() &&
+             timeValue.toMillis() >= request.time.toMillis() - 5 * 60 * 1000; // Within 5 minutes
+    }
+    
+    function isValidAuditLogData() {
+      return request.resource.data.keys().hasAll([
+        'eventType',
+        'description',
+        'timestamp',
+        'ipAddress',
+        'userAgent',
+        'deviceInfo',
+        'riskLevel'
+      ]) &&
+      request.resource.data.eventType is string &&
+      request.resource.data.description is string &&
+      request.resource.data.timestamp is timestamp &&
+      request.resource.data.ipAddress is string &&
+      request.resource.data.userAgent is string &&
+      request.resource.data.deviceInfo is map &&
+      request.resource.data.riskLevel is string &&
+      request.resource.data.riskLevel in ['low', 'medium', 'high', 'critical'];
+    }
+    
+    // User-specific documents
+    match /users/{userId} {
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+      allow create: if isAuthenticated() && 
+                    request.auth.uid == userId && 
+                    isValidUserData();
+      allow update: if isOwner(userId) && 
+                    !isRateLimited('userUpdate', 20);
+    }
+    
+    // Audit logs collection
+    match /auditLogs/{userId} {
+      allow read: if isOwner(userId);
+      
+      // Nested logs collection
+      match /logs/{logId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && 
+                     request.resource.data.keys().hasAll(['eventType', 'description', 'timestamp']) &&
+                     request.resource.data.eventType is string &&
+                     request.resource.data.description is string &&
+                     request.resource.data.timestamp is timestamp;
+        allow delete: if false; // Audit logs should never be deleted
+      }
+    }
+    
+    // User settings
+    match /userSettings/{userId} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId) && 
+                    !isRateLimited('settingsUpdate', 10);
+    }
+    
+    // Vault items
+    match /vaults/{userId}/items/{itemId} {
+      allow read, write: if isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Rate limiting collection
+    match /rateLimits/{userId} {
+      allow read: if isOwner(userId);
+      allow write: if false; // Only allow writes from server functions
+    }
+    
+    // Stealth mode settings
+    match /stealthMode/{userId} {
+      allow read, write: if isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Two-factor authentication settings
+    match /twoFactor/{userId} {
+      allow read, write: if isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Catch-all rule to deny all other requests
+    match /{document=**} {
+      allow read, write: if false; // Deny access by default
+    }
+  }
+} 

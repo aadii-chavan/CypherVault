@@ -1,0 +1,26 @@
+# Python dependencies for Secure Vault Sentry project
+# Note: This project appears to be primarily a JavaScript/TypeScript application
+# These dependencies may be useful for any potential backend Python services
+
+# Firebase Admin SDK for Python (for server-side operations)
+firebase-admin==6.2.0
+
+# Web framework if needed for APIs
+flask==2.3.3
+flask-cors==4.0.0
+
+# Security-related packages (for cryptographic operations)
+cryptography==41.0.4
+pycryptodome==3.19.0
+
+# Environment variables management
+python-dotenv==1.0.0
+
+# For JWT token handling
+pyjwt==2.8.0
+
+# Database connectors (if needed)
+pymongo==4.5.0
+
+# Utility packages
+requests==2.31.0 

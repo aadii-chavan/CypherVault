@@ -1,0 +1,74 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 223 28% 14%;
+    --foreground: 240 5% 98%;
+
+    --card: 225 25% 18%;
+    --card-foreground: 240 5% 98%;
+
+    --popover: 225 25% 18%;
+    --popover-foreground: 240 5% 98%;
+
+    --primary: 255 82% 75%;
+    --primary-foreground: 240 5% 98%;
+
+    --secondary: 260 25% 54%;
+    --secondary-foreground: 240 5% 98%;
+
+    --muted: 225 25% 24%;
+    --muted-foreground: 240 5% 84%;
+
+    --accent: 260 35% 59%;
+    --accent-foreground: 240 5% 98%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 240 5% 98%;
+
+    --border: 225 25% 24%;
+    --input: 225 25% 24%;
+    --ring: 255 82% 75%;
+
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .lock-animation {
+    @apply transition-all duration-300;
+  }
+  
+  .eye-animation {
+    @apply transition-all duration-200;
+  }
+  
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-md hover:bg-accent/5;
+  }
+  
+  .password-strength-weak {
+    @apply bg-red-500;
+  }
+  
+  .password-strength-medium {
+    @apply bg-yellow-500;
+  }
+  
+  .password-strength-strong {
+    @apply bg-green-500;
+  }
+}
