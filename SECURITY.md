@@ -121,4 +121,4 @@ This document outlines the security improvements made to the Secure Vault Sentry
 
 ## Security Contacts
 
-If you discover a security vulnerability, please contact the security team at [security@example.com](mailto:security@example.com) rather than opening a public issue. 
+If you discover a security vulnerability, please contact the security team at [security@example.com](mailto:workwithaadichavan@gmail.com) rather than opening a public issue. 
