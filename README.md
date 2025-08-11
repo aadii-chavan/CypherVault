@@ -1,5 +1,5 @@
 # CypherVault - Secure Password Manager
-cypher-vault-project.web.app
+[CYPHER VAULT APP](https://cypher-vault-project.web.app/) <br>
 A zero-knowledge, end-to-end encrypted password manager built with React, TypeScript, and Firebase.
 
 ## Security Features
