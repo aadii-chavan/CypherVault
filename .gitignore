@@ -27,3 +27,31 @@ dist-ssr
 .env
 .env.*
 !.env.example
+
+# Build caches and temp
+.vite/
+node_modules/.vite/
+.cache/
+.tmp/
+
+# Framework outputs
+.next/
+out/
+.vercel/
+.turbo/
+
+# Coverage
+coverage/
+
+# Firebase emulator and logs
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+# TypeScript build info
+*.tsbuildinfo
+
+# OS metadata
+Thumbs.db
+Icon?
