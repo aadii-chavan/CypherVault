@@ -19,12 +19,9 @@ const AccountSettings: React.FC = () => {
     updateUserDisplayName, 
     updateEmail, 
     updatePassword,
-    updateUserMasterkey,
-    updateMasterKey,
     autoLockTime = 300000, // Set default value
     updateAutoLockTime,
     deleteAccount,
-    vaultUnlocked,
     signOut
   } = useAuth();
   const { toast } = useToast();
@@ -34,15 +31,13 @@ const AccountSettings: React.FC = () => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
-  const [currentMasterkey, setCurrentMasterkey] = useState('');
-  const [newMasterkey, setNewMasterkey] = useState('');
-  const [confirmNewMasterkey, setConfirmNewMasterkey] = useState('');
+  // Masterkey management removed
   const [selectedAutoLockTime, setSelectedAutoLockTime] = useState(autoLockTime || 300000);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deletePassword, setDeletePassword] = useState('');
   const [passwordLoading, setPasswordLoading] = useState(false);
-  const [masterkeyLoading, setMasterkeyLoading] = useState(false);
+  // Masterkey management removed
   
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,101 +109,7 @@ const AccountSettings: React.FC = () => {
     }
   };
   
-  const handleUpdateMasterkey = async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("🔄 Starting masterkey update process in UI");
-    
-    if (!currentMasterkey || !newMasterkey || !confirmNewMasterkey) {
-      console.error("❌ Missing required fields");
-      toast({
-        title: "Missing Information",
-        description: "Please fill in all masterkey fields",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    if (newMasterkey !== confirmNewMasterkey) {
-      console.error("❌ New masterkeys don't match");
-      toast({
-        title: "Masterkeys Don't Match",
-        description: "The new masterkeys you entered do not match. Please try again.",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    if (!vaultUnlocked) {
-      console.error("❌ Vault is locked");
-      toast({
-        title: "Vault Locked",
-        description: "You must unlock your vault before changing the masterkey",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    try {
-      setMasterkeyLoading(true);
-      
-      console.log("🔍 updateMasterKey is:", typeof updateMasterKey);
-      console.log("🔍 updateUserMasterkey is:", typeof updateUserMasterkey);
-      
-      let success = false;
-      
-      if (typeof updateMasterKey === 'function') {
-        console.log("✅ Using new updateMasterKey function");
-        success = await updateMasterKey(currentMasterkey, newMasterkey);
-      } else if (typeof updateUserMasterkey === 'function') {
-        console.log("⚠️ Falling back to updateUserMasterkey function");
-        success = await updateUserMasterkey(currentMasterkey, newMasterkey);
-      } else {
-        console.error("❌ No masterkey update function available");
-        throw new Error("Masterkey update function is not available");
-      }
-      
-      console.log("📥 Masterkey update result:", success);
-      
-      if (success) {
-        console.log("✅ Masterkey update successful");
-        setCurrentMasterkey('');
-        setNewMasterkey('');
-        setConfirmNewMasterkey('');
-        
-        toast({
-          title: "Masterkey Updated",
-          description: "Your masterkey has been successfully updated. You will need to use the new masterkey to unlock your vault.",
-        });
-      } else {
-        console.error("❌ Masterkey update failed - incorrect key");
-        toast({
-          title: "Incorrect Masterkey",
-          description: "The current masterkey you entered is incorrect. Please try again.",
-          variant: "destructive"
-        });
-        setCurrentMasterkey('');
-      }
-    } catch (error: any) {
-      console.error("❌ Masterkey update error:", error);
-      
-      if (error.message?.includes("Decryption failed")) {
-        toast({
-          title: "Incorrect Masterkey",
-          description: "The current masterkey you entered is incorrect. Please try again.",
-          variant: "destructive"
-        });
-        setCurrentMasterkey('');
-      } else {
-        toast({
-          title: "Update Failed",
-          description: error.message || "Failed to update masterkey. Please try again.",
-          variant: "destructive"
-        });
-      }
-    } finally {
-      setMasterkeyLoading(false);
-    }
-  };
+  // Masterkey update flow removed
   
   const handleDeleteAccount = async () => {
     if (!deletePassword) {
@@ -359,54 +260,7 @@ const AccountSettings: React.FC = () => {
                   {passwordLoading ? 'Updating...' : 'Update Password'}
                 </Button>
               </form>
-              
-              <Separator />
-              
-              <div className="space-y-4">
-                <form onSubmit={handleUpdateMasterkey} className="space-y-4">
-                  <h3 className="text-lg font-medium">Change Masterkey</h3>
-                  <div className="space-y-3">
-                    <div className="space-y-1">
-                      <Label htmlFor="currentMasterkey">Current Masterkey</Label>
-                      <Input
-                        id="currentMasterkey"
-                        type="password"
-                        value={currentMasterkey}
-                        onChange={(e) => setCurrentMasterkey(e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label htmlFor="newMasterkey">New Masterkey</Label>
-                      <Input
-                        id="newMasterkey"
-                        type="password"
-                        value={newMasterkey}
-                        onChange={(e) => setNewMasterkey(e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label htmlFor="confirmNewMasterkey">Confirm New Masterkey</Label>
-                      <Input
-                        id="confirmNewMasterkey"
-                        type="password"
-                        value={confirmNewMasterkey}
-                        onChange={(e) => setConfirmNewMasterkey(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <Button type="submit" disabled={masterkeyLoading}>
-                    {masterkeyLoading ? 'Updating...' : 'Update Masterkey'}
-                  </Button>
-                </form>
-                
-                <Alert>
-                  <Key className="h-4 w-4" />
-                  <AlertTitle>Important Note</AlertTitle>
-                  <AlertDescription>
-                    Your masterkey is used to encrypt your vault. If you change it, you'll need to use the new masterkey to unlock your vault.
-                  </AlertDescription>
-                </Alert>
-              </div>
+              {/* Masterkey settings removed */}
             </CardContent>
           </Card>
         </TabsContent>

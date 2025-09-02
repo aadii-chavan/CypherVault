@@ -226,16 +226,7 @@ const LoginForm: React.FC = () => {
             />
           </div>
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
-              <Button 
-                variant="link" 
-                className="p-0 h-auto text-sm" 
-                onClick={() => navigate('/forgot-password')}
-              >
-                Forgot password?
-              </Button>
-            </div>
+            <Label htmlFor="password">Password</Label>
             <Input
               id="password"
               type="password"
@@ -266,6 +257,15 @@ const LoginForm: React.FC = () => {
               </div>
             )}
           </Button>
+          <div className="flex justify-center">
+            <Button 
+              variant="link" 
+              className="p-0 h-auto text-sm"
+              onClick={() => navigate('/forgot-password')}
+            >
+              Forgot password?
+            </Button>
+          </div>
         </form>
       </CardContent>
       <CardFooter className="flex flex-col space-y-2">

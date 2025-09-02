@@ -37,13 +37,13 @@ const debugLog = (...args: any[]) => {
 export interface AuthContextType {
   user: User | null;
   loading: boolean;
-  signUp: (email: string, password: string, displayName: string, masterkey: string) => Promise<UserCredential>;
+  signUp: (email: string, password: string, displayName: string) => Promise<UserCredential>;
   login: (email: string, password: string) => Promise<UserCredential>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   updateEmail: (email: string) => Promise<void>;
-  updatePassword: (password: string) => Promise<void>;
-  unlockVault: (masterPassword: string) => Promise<boolean>;
+  updatePassword: (currentPassword: string, newPassword: string) => Promise<void>;
+  unlockVault: (accountPassword: string) => Promise<boolean>;
   lockVault: () => void;
   vaultUnlocked: boolean;
   masterKey: string | null;
@@ -54,8 +54,6 @@ export interface AuthContextType {
   disableTwoFactor: () => Promise<boolean>;
   twoFactorEnabled: boolean;
   isAuthenticated: boolean;
-  updateUserMasterkey: (currentMasterkey: string, newMasterkey: string) => Promise<boolean>;
-  updateMasterKey: (currentMasterkey: string, newMasterkey: string) => Promise<boolean>;
   autoLockTime?: number;
   updateAutoLockTime?: (time: number) => Promise<void>;
   isTrustedDevicesEnabled: () => Promise<boolean>;
@@ -355,7 +353,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     loadTrustedDeviceSettings();
   }, [currentUser]);
 
-  const signUp = async (email: string, password: string, displayName: string, masterkey: string) => {
+  const signUp = async (email: string, password: string, displayName: string) => {
     let firebaseUser = null;
     
     try {
@@ -374,11 +372,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         passwords: []
       };
       
-      // Encrypt the initial vault data with the masterkey
-      const encryptedVault = await cryptoUtils.encryptData(JSON.stringify(initialVaultData), masterkey);
+      // Encrypt the initial vault data with the ACCOUNT PASSWORD
+      const encryptedVault = await cryptoUtils.encryptData(JSON.stringify(initialVaultData), password);
       
-      // Hash the master key for verification
-      const vaultKeyHash = await encryption.hashMasterkey(masterkey);
+      // Hash the ACCOUNT PASSWORD for verification (stored as vaultKeyHash)
+      const vaultKeyHash = await encryption.hashMasterkey(password);
       
       // Create the user document in Firestore
       try {
@@ -544,7 +542,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const unlockVault = async (masterPassword: string): Promise<boolean> => {
+  const unlockVault = async (accountPassword: string): Promise<boolean> => {
     if (!currentUser) {
       throw new Error('User not authenticated');
     }
@@ -573,10 +571,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         };
         
         // Encrypt the initial vault data
-        const encryptedVault = await cryptoUtils.encryptData(JSON.stringify(initialVaultData), masterPassword);
+        const encryptedVault = await cryptoUtils.encryptData(JSON.stringify(initialVaultData), accountPassword);
         
-        // Hash the master key
-        const vaultKeyHash = await encryption.hashMasterkey(masterPassword);
+        // Hash the account password
+        const vaultKeyHash = await encryption.hashMasterkey(accountPassword);
         
         // Update user document with initialized vault
         await updateDoc(doc(db, 'users', currentUser.uid), {
@@ -588,10 +586,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         // Set vault unlocked state and master key
         setVaultUnlocked(true);
-        setMasterKey(masterPassword);
+        setMasterKey(accountPassword);
         
         // Store master key securely with auto-lock timeout
-        secureStorage.secureSet('masterKey', masterPassword, 300000);
+        secureStorage.secureSet('masterKey', accountPassword, 300000);
         
         // Update last activity timestamp
         setLastActivity(Date.now());
@@ -606,8 +604,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return true;
       }
 
-      // Verify master key
-      const isValid = await encryption.verifyMasterkey(masterPassword, userData.vaultKeyHash);
+      // Verify using account password
+      const isValid = await encryption.verifyMasterkey(accountPassword, userData.vaultKeyHash);
       
       if (isValid) {
         // Clear failed attempts on success
@@ -615,11 +613,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         // Set vault unlocked state and master key
         setVaultUnlocked(true);
-        setMasterKey(masterPassword);
+        setMasterKey(accountPassword);
         
         // Store master key securely with auto-lock timeout
         const autoLockTimeout = userData.autoLockTimeout || 30 * 60 * 1000; // Default 30 minutes
-        secureStorage.secureSet('masterKey', masterPassword, autoLockTimeout);
+        secureStorage.secureSet('masterKey', accountPassword, autoLockTimeout);
         
         // Update last activity timestamp
         setLastActivity(Date.now());
@@ -643,10 +641,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         await logAuditEvent(
           currentUser.uid,
           'vault_unlock_failed',
-          'Failed vault unlock attempt with incorrect master password'
+          'Failed vault unlock attempt with incorrect account password'
         );
         
-        throw new Error('Invalid master key');
+        throw new Error('Invalid password');
       }
     } catch (error) {
       console.error('Vault unlock error:', error);

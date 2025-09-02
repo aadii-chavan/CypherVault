@@ -9,7 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
 const MasterkeyForm: React.FC = () => {
-  const [masterkey, setMasterkey] = useState('');
+  const [accountPassword, setAccountPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [loadingTimeout, setLoadingTimeout] = useState<NodeJS.Timeout | null>(null);
   const [attempts, setAttempts] = useState(0);
@@ -28,7 +28,7 @@ const MasterkeyForm: React.FC = () => {
   // Add listener for clear-vault-key event
   useEffect(() => {
     const handleClearVaultKey = () => {
-      setMasterkey('');
+      setAccountPassword('');
       setLoading(false);
       if (loadingTimeout) {
         clearTimeout(loadingTimeout);
@@ -61,11 +61,11 @@ const MasterkeyForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!masterkey) {
+    if (!accountPassword) {
       toast.error(
-        "Missing Masterkey",
+        "Missing Password",
         {
-          description: "Please enter your masterkey to unlock the vault"
+          description: "Please enter your account password to unlock the vault"
         }
       );
       return;
@@ -95,12 +95,12 @@ const MasterkeyForm: React.FC = () => {
         toast.info(
           "Validating...",
           {
-            description: "Checking masterkey and unlocking vault"
+            description: "Validating and unlocking vault"
           }
         );
       }
       
-      const success = await unlockVault(masterkey);
+      const success = await unlockVault(accountPassword);
       
       // Clear the timeout since we got a response
       clearTimeout(timeout);
@@ -121,12 +121,12 @@ const MasterkeyForm: React.FC = () => {
         }, 100);
       } else {
         toast.error(
-          "Incorrect Masterkey",
+          "Incorrect Password",
           {
-            description: "The masterkey you entered is incorrect. Please verify and try again."
+            description: "The password you entered is incorrect. Please verify and try again."
           }
         );
-        setMasterkey('');
+        setAccountPassword('');
         setLoading(false);
       }
     } catch (error) {
@@ -140,7 +140,7 @@ const MasterkeyForm: React.FC = () => {
           description: "An error occurred while unlocking your vault. Please try again."
         }
       );
-      setMasterkey('');
+      setAccountPassword('');
       setLoading(false);
     } finally {
       // Always clear the console.time timer
@@ -159,19 +159,19 @@ const MasterkeyForm: React.FC = () => {
         </div>
         <CardTitle className="text-2xl font-bold text-center">Unlock Your Vault</CardTitle>
         <CardDescription className="text-center">
-          Enter your masterkey to access your secure vault
+          Enter your account password to access your secure vault
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="masterkey">Masterkey</Label>
+            <Label htmlFor="password">Account Password</Label>
             <Input
-              id="masterkey"
+              id="password"
               type="password"
-              placeholder="Enter your masterkey"
-              value={masterkey}
-              onChange={(e) => setMasterkey(e.target.value)}
+              placeholder="Enter your password"
+              value={accountPassword}
+              onChange={(e) => setAccountPassword(e.target.value)}
               required
               autoFocus
               autoComplete="new-password"

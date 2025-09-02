@@ -6,7 +6,7 @@ A zero-knowledge, end-to-end encrypted password manager built with React, TypeSc
 
 ### Core Security
 
-- **Zero-Knowledge Architecture**: All encryption/decryption happens client-side; your master key and passwords never leave your device.
+- **Zero-Knowledge Architecture**: All encryption/decryption happens client-side; your encryption key (derived from your account password) and passwords never leave your device.
 - **Advanced Encryption**: AES-256-GCM encryption with the Web Crypto API for authenticated encryption.
 - **Strong Key Derivation**: PBKDF2-HMAC-SHA256 with 310,000 iterations (OWASP recommended).
 - **Per-Entry Encryption**: Each password entry is encrypted individually with a unique salt and IV.
@@ -17,7 +17,7 @@ A zero-knowledge, end-to-end encrypted password manager built with React, TypeSc
 - **Content Security Policy (CSP)**: Strong CSP headers block inline scripts and restrict content to trusted sources.
 - **Two-Factor Authentication (2FA)**: TOTP-based authentication using authenticator apps like Google Authenticator.
 - **Automatic Vault Locking**: Configurable auto-lock timer to protect your vault during inactivity.
-- **Reauthentication for Sensitive Actions**: Actions like changing your master key or deleting your account require password verification.
+- **Reauthentication for Sensitive Actions**: Actions like changing your account password or deleting your account require password verification.
 - **Memory Sanitization**: Sensitive data is securely wiped from memory when no longer needed.
 - **Password Strength Meter**: Real-time password strength feedback using zxcvbn for entropy analysis.
 - **Security Audit Logs**: Comprehensive logging of security events with searchable history.
@@ -34,8 +34,8 @@ A zero-knowledge, end-to-end encrypted password manager built with React, TypeSc
 
 ## Features
 
-- Secure password storage with encryption
-- Master key protection
+- Secure password storage with end-to-end encryption
+- Vault key derived from your account password (no separate master key)
 - Auto-lock functionality
 - User authentication
 - Password generation
@@ -45,6 +45,14 @@ A zero-knowledge, end-to-end encrypted password manager built with React, TypeSc
 - Hardware security key support
 - Advanced anti-tampering protections
 - Comprehensive Security Center
+
+## Recent Changes
+
+- Vault unlock now uses your account password; the separate master key has been removed.
+- Signup no longer asks for a master key.
+- Settings no longer include "Change Masterkey"; use "Change Password" to rotate credentials. Your vault remains encrypted with a key derived from your new password on next unlock/save flows.
+- Login screen layout updated; "Forgot password?" appears under the Sign In button.
+- .gitignore updated to exclude common build outputs, caches, emulator logs, and OS files.
 
 ## Prerequisites
 

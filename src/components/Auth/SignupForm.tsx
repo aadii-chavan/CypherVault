@@ -14,8 +14,7 @@ const SignupForm: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [masterkey, setMasterkey] = useState('');
-  const [confirmMasterkey, setConfirmMasterkey] = useState('');
+  // Masterkey removed: vault will be encrypted with the account password
   const [displayName, setDisplayName] = useState('');
   const [loading, setLoading] = useState(false);
   const { signUp } = useAuth();
@@ -23,7 +22,7 @@ const SignupForm: React.FC = () => {
   const { toast } = useToast();
 
   const passwordStrength = calculatePasswordStrength(password);
-  const masterkeyStrength = calculatePasswordStrength(masterkey);
+  // No separate masterkey strength
 
   const getStrengthColor = (strength: 'weak' | 'medium' | 'strong') => {
     switch (strength) {
@@ -37,7 +36,7 @@ const SignupForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !password || !confirmPassword || !masterkey || !confirmMasterkey || !displayName) {
+    if (!email || !password || !confirmPassword || !displayName) {
       toast({
         title: "Missing fields",
         description: "Please fill in all fields",
@@ -55,14 +54,7 @@ const SignupForm: React.FC = () => {
       return;
     }
     
-    if (masterkey !== confirmMasterkey) {
-      toast({
-        title: "Masterkeys do not match",
-        description: "Please make sure your masterkeys match",
-        variant: "destructive"
-      });
-      return;
-    }
+    // No masterkey confirmation required
     
     if (passwordStrength === 'weak') {
       toast({
@@ -73,18 +65,11 @@ const SignupForm: React.FC = () => {
       return;
     }
     
-    if (masterkeyStrength === 'weak') {
-      toast({
-        title: "Weak masterkey",
-        description: "Please use a stronger masterkey",
-        variant: "destructive"
-      });
-      return;
-    }
+    // No masterkey strength check
     
     try {
       setLoading(true);
-      const userCredential = await signUp(email, password, displayName, masterkey);
+      const userCredential = await signUp(email, password, displayName);
       
       if (userCredential) {
         toast({
@@ -175,51 +160,7 @@ const SignupForm: React.FC = () => {
             />
           </div>
           
-          <div className="space-y-2">
-            <div className="flex items-center">
-              <Label htmlFor="masterkey">Masterkey</Label>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-4 w-4 ml-1">
-                      <Info size={14} />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>The masterkey encrypts your vault data. It is never stored on our servers. If you forget it, your data cannot be recovered.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-            <Input
-              id="masterkey"
-              type="password"
-              placeholder="Enter your masterkey"
-              value={masterkey}
-              onChange={(e) => setMasterkey(e.target.value)}
-              required
-            />
-            {masterkey && (
-              <div className="h-1 w-full bg-gray-700 rounded-full overflow-hidden">
-                <div 
-                  className={`h-full ${getStrengthColor(masterkeyStrength)}`} 
-                  style={{ width: masterkeyStrength === 'weak' ? '33%' : masterkeyStrength === 'medium' ? '66%' : '100%' }}
-                ></div>
-              </div>
-            )}
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="confirmMasterkey">Confirm Masterkey</Label>
-            <Input
-              id="confirmMasterkey"
-              type="password"
-              placeholder="Confirm your masterkey"
-              value={confirmMasterkey}
-              onChange={(e) => setConfirmMasterkey(e.target.value)}
-              required
-            />
-          </div>
+          {/* Masterkey fields removed: vault uses account password for encryption */}
           
           <Button 
             type="submit" 
