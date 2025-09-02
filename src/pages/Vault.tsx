@@ -361,7 +361,7 @@ const Vault: React.FC = () => {
         <div className="bg-card rounded-lg shadow-md p-4 sm:p-6 border border-border">
           <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center">Unlock Your Vault</h2>
           <p className="text-muted-foreground mb-4 sm:mb-6 text-center text-sm sm:text-base">
-            Enter your master key to access your passwords
+            Enter your account password to access your passwords
           </p>
           <MasterkeyForm onSuccess={() => {
             console.log('Vault unlocked successfully');
