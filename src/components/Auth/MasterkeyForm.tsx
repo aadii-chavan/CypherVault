@@ -13,7 +13,7 @@ const MasterkeyForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [loadingTimeout, setLoadingTimeout] = useState<NodeJS.Timeout | null>(null);
   const [attempts, setAttempts] = useState(0);
-  const { unlockVault, signOut, vaultUnlocked } = useAuth();
+  const { unlockVault, signOut, vaultUnlocked, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -107,10 +107,12 @@ const MasterkeyForm: React.FC = () => {
       setLoadingTimeout(null);
       
       if (success) {
+        const displayName = user?.displayName;
+        const greeting = displayName ? ` ${displayName}'s` : '';
         toast.success(
           "Vault Unlocked",
           {
-            description: "Your vault has been successfully unlocked. You can now access your passwords."
+            description: `${displayName ? displayName + ', your' : 'Your'} vault has been successfully unlocked. You can now access your passwords.`
           }
         );
         
@@ -157,7 +159,9 @@ const MasterkeyForm: React.FC = () => {
             <Lock className="h-6 w-6 text-accent absolute bottom-0 right-0" />
           </div>
         </div>
-        <CardTitle className="text-2xl font-bold text-center">Unlock Your Vault</CardTitle>
+        <CardTitle className="text-2xl font-bold text-center">
+          {user?.displayName ? `Welcome back, ${user.displayName}` : 'Unlock Your Vault'}
+        </CardTitle>
         <CardDescription className="text-center">
           Enter your account password to access your secure vault
         </CardDescription>

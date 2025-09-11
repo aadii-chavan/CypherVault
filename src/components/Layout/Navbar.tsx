@@ -4,6 +4,7 @@ import { Shield, Lock, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
+import UserProfileDropdown from '@/components/ui/UserProfileDropdown';
 
 interface NavbarProps {
   sidebarOpen: boolean;
@@ -11,8 +12,11 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ sidebarOpen, setSidebarOpen }) => {
-  const { isAuthenticated, isVaultUnlocked, lockVault } = useAuth();
+  const { isAuthenticated, vaultUnlocked, lockVault, user } = useAuth();
   const navigate = useNavigate();
+
+  const displayName = user?.displayName || 'Account';
+  const email = user?.email || '';
 
   return (
     <nav className="sticky top-0 z-30 w-full bg-card border-b border-border shadow-sm">
@@ -42,18 +46,18 @@ const Navbar: React.FC<NavbarProps> = ({ sidebarOpen, setSidebarOpen }) => {
         {/* Auth Actions */}
         <div className="flex items-center space-x-1 sm:space-x-2">
           {isAuthenticated ? (
-            <div className="flex items-center gap-1 sm:gap-2">
+            <div className="flex items-center gap-2">
               <div className={cn(
                 "flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm",
-                isVaultUnlocked 
+                vaultUnlocked 
                   ? "bg-green-500/20 text-green-500" 
                   : "bg-yellow-500/20 text-yellow-500"
               )}>
                 <Lock size={12} className="hidden sm:block" />
-                <span>{isVaultUnlocked ? 'Unlocked' : 'Locked'}</span>
+                <span>{vaultUnlocked ? 'Unlocked' : 'Locked'}</span>
               </div>
               
-              {isVaultUnlocked && (
+              {vaultUnlocked && (
                 <Button 
                   variant="outline" 
                   size="sm"
@@ -63,6 +67,9 @@ const Navbar: React.FC<NavbarProps> = ({ sidebarOpen, setSidebarOpen }) => {
                   Lock Vault
                 </Button>
               )}
+
+              {/* User profile dropdown with display name */}
+              <UserProfileDropdown displayName={displayName} email={email} />
             </div>
           ) : (
             <div className="flex gap-1 sm:gap-2">

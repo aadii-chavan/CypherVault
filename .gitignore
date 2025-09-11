@@ -20,7 +20,7 @@ dist-ssr
 *.suo
 *.ntvs*
 *.njsproj
-*.sln
+*.slngit
 *.sw?
 
 # Environment files

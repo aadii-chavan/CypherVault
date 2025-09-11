@@ -193,8 +193,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Auto-lock if idle time exceeds the limit and vault is unlocked
       if (vaultUnlocked && autoLockTime > 0 && currentIdleTime >= autoLockTime) {
         lockVault();
-        toast("Vault locked", {
-          description: "Your vault has been automatically locked due to inactivity"
+        const displayName = currentUser?.displayName || '';
+        const greeting = displayName ? `${displayName}, your` : 'Your';
+        toast("Vault Auto-Locked", {
+          description: `${greeting} vault has been automatically locked due to inactivity for security`
         });
       }
     }, 60000); // Check every minute
@@ -427,7 +429,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setCurrentUser(user);
       setIsAuthenticated(true);
       
-      toast.success("Account created", {
+      toast.success(`Welcome to CypherVault, ${displayName}!`, {
         description: "Your account has been created successfully"
       });
       

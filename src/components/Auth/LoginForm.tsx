@@ -103,8 +103,10 @@ const LoginForm: React.FC = () => {
         secureStorage.secureSet('loginAttempts', 0);
         secureStorage.secureRemove('loginLockedUntil');
         
+        // Get display name from the logged in user
+        const displayName = result.displayName || 'there';
         toast.success(
-          "Welcome Back",
+          `Welcome back, ${displayName}!`,
           {
             description: "You've successfully logged in to your vault"
           }
