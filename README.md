@@ -1,118 +1,263 @@
-# CypherVault - Secure Password Manager
-[CYPHER VAULT APP](https://cypher-vault-project.web.app/) <br>
-A zero-knowledge, end-to-end encrypted password manager built with React, TypeScript, and Firebase.
+# 🛡️ CypherVault - Zero-Knowledge Secure Password Manager
 
-## Security Features
+<div align="center">
 
-### Core Security
+![React](https://img.shields.io/badge/React-18.2.0-blue.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0.0-blue.svg)
+![Firebase](https://img.shields.io/badge/Firebase-9.0.0-yellow.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-- **Zero-Knowledge Architecture**: All encryption/decryption happens client-side; your encryption key (derived from your account password) and passwords never leave your device.
-- **Advanced Encryption**: AES-256-GCM encryption with the Web Crypto API for authenticated encryption.
-- **Strong Key Derivation**: PBKDF2-HMAC-SHA256 with 310,000 iterations (OWASP recommended).
-- **Per-Entry Encryption**: Each password entry is encrypted individually with a unique salt and IV.
-- **Secure Storage**: All sensitive data is stored encrypted in Firebase.
+**A next-generation, end-to-end encrypted password manager with zero-knowledge architecture and advanced security features.**
 
-### Enhanced Security (Tier 2)
+[CYPHER VAULT APP](https://cypher-vault-project.web.app/)
 
-- **Content Security Policy (CSP)**: Strong CSP headers block inline scripts and restrict content to trusted sources.
-- **Two-Factor Authentication (2FA)**: TOTP-based authentication using authenticator apps like Google Authenticator.
-- **Automatic Vault Locking**: Configurable auto-lock timer to protect your vault during inactivity.
-- **Reauthentication for Sensitive Actions**: Actions like changing your account password or deleting your account require password verification.
-- **Memory Sanitization**: Sensitive data is securely wiped from memory when no longer needed.
-- **Password Strength Meter**: Real-time password strength feedback using zxcvbn for entropy analysis.
-- **Security Audit Logs**: Comprehensive logging of security events with searchable history.
+</div>
 
-### Elite Security (Tier 3)
+---
 
-- **WebAuthn/FIDO2 Integration**: Hardware-backed, phishing-resistant authentication with security keys and biometrics.
-- **Clipboard Auto-Clear**: Automatically clears sensitive data from clipboard after configurable timeout.
-- **Stealth Mode & Panic Key**: Quickly hide sensitive information and lock vault with a panic keystroke combination.
-- **Session Integrity Verification**: Cryptographic verification of session integrity to protect against tampering.
-- **Browser Fingerprinting**: Limit vault access to trusted devices only with sophisticated device recognition.
-- **Decoy Vault**: Protection against coercion attacks with believable fake credentials.
-- **Password Breach Checking**: Zero-knowledge password breach verification against Have I Been Pwned database.
+## 📋 Table of Contents
 
-## Features
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Technology Stack](#technology-stack)
+- [System Architecture](#system-architecture)
+- [Installation Guide](#installation-guide)
+- [Usage Instructions](#usage-instructions)
+- [API Documentation](#api-documentation)
+- [Configuration](#configuration)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
+- [Support](#support)
 
-- Secure password storage with end-to-end encryption
-- Vault key derived from your account password (no separate master key)
-- Auto-lock functionality
-- User authentication
-- Password generation
-- Secure sharing
-- Two-Factor Authentication
-- Security audit logs
-- Hardware security key support
-- Advanced anti-tampering protections
-- Comprehensive Security Center
+---
 
-## Recent Changes
+## 🎯 Overview
 
-- Vault unlock now uses your account password; the separate master key has been removed.
-- Signup no longer asks for a master key.
-- Settings no longer include "Change Masterkey"; use "Change Password" to rotate credentials. Your vault remains encrypted with a key derived from your new password on next unlock/save flows.
-- Login screen layout updated; "Forgot password?" appears under the Sign In button.
-- .gitignore updated to exclude common build outputs, caches, emulator logs, and OS files.
+CypherVault is a modern password manager designed for maximum security and privacy. Built with a zero-knowledge architecture, all encryption and decryption happen on your device—your secrets never leave your hands. CypherVault leverages strong cryptography, multi-factor authentication, and a beautiful, responsive UI to keep your digital life safe and convenient.
 
-## Prerequisites
+### 🌟 Target Users
+- **Individuals**: Securely manage personal credentials
+- **Teams**: Share secrets safely with advanced access controls
+- **Security-Conscious Users**: For those who demand the highest standards in privacy
 
-- Node.js (v16 or higher)
-- npm or yarn
-- Firebase account
+---
 
-## Environment Setup
+## ✨ Key Features
 
-1. Copy the `.env.example` file to `.env`:
-   ```bash
-   cp .env.example .env
-   ```
+### 🔒 **Uncompromising Security**
+- **Zero-Knowledge Encryption**: All encryption/decryption is client-side; your keys and passwords never leave your device.
+- **AES-256-GCM Encryption**: Industry-standard, authenticated encryption for all secrets.
+- **PBKDF2-HMAC-SHA256**: Strong key derivation with 310,000+ iterations.
+- **Per-Entry Encryption**: Each password entry is uniquely encrypted with its own salt and IV.
+- **Secure Storage**: All sensitive data is encrypted before being stored in Firebase.
 
-2. Update the `.env` file with your Firebase configuration:
-   - Go to your Firebase Console
-   - Select your project
-   - Go to Project Settings
-   - Copy the configuration values to your `.env` file
+### 🛡️ **Advanced Protections**
+- **Content Security Policy (CSP)**: Strict CSP headers block inline scripts and restrict content to trusted sources.
+- **Two-Factor Authentication (2FA)**: TOTP-based 2FA for robust account protection.
+- **Automatic Vault Locking**: Auto-locks after inactivity to prevent unauthorized access.
+- **Reauthentication for Sensitive Actions**: Password verification required for critical operations.
+- **Memory Sanitization**: Sensitive data is wiped from memory when not needed.
+- **Password Strength Meter**: Real-time feedback using zxcvbn entropy analysis.
+- **Security Audit Logs**: Track all security events with searchable history.
 
-## Installation
+### 🏆 **Elite Security (Tier 3)**
+- **WebAuthn/FIDO2**: Hardware-backed, phishing-resistant authentication.
+- **Clipboard Auto-Clear**: Sensitive data is cleared from clipboard after a timeout.
+- **Stealth Mode & Panic Key**: Instantly hide sensitive info and lock vault with a panic keystroke.
+- **Session Integrity Verification**: Protects against session tampering.
+- **Device Fingerprinting**: Restrict access to trusted devices.
+- **Decoy Vault**: Fake credentials for coercion scenarios.
+- **Password Breach Checking**: Zero-knowledge checks against Have I Been Pwned.
 
-1. Install dependencies:
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
+### 🖥️ **Modern User Experience**
+- **Responsive Web UI**: Works beautifully on desktop and mobile
+- **Dark/Light Mode**: Seamless theme switching
+- **Password Generator**: Create strong, unique passwords
+- **Secure Sharing**: Share credentials safely
+- **Comprehensive Security Center**: All your security controls in one place
 
-2. Start the development server:
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
+---
 
-## Deployment
+## 🛠️ Technology Stack
 
-1. Build the application:
-   ```bash
-   npm run build
-   # or
-   yarn build
-   ```
+### **Frontend**
+- **React 18**: Modern UI framework
+- **TypeScript**: Type-safe development
+- **Tailwind CSS**: Utility-first styling
 
-2. Deploy to Firebase Hosting:
-   ```bash
-   npm run deploy
-   # or
-   yarn deploy
-   ```
+### **Backend & Cloud**
+- **Firebase**: Authentication, Firestore, Hosting
+- **Web Crypto API**: Client-side cryptography
 
-## Contributing
+### **Security & Utilities**
+- **zxcvbn**: Password strength estimation
+- **TOTP**: Two-factor authentication
+- **Have I Been Pwned API**: Breach checking
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+---
 
-## License
+## 🏗️ System Architecture
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+```mermaid
+graph TB
+    A[User Device] --> B[CypherVault Web App]
+    B --> C[Web Crypto API]
+    B --> D[Firebase Auth]
+    B --> E[Firestore (Encrypted Data)]
+    B --> F[TOTP/2FA]
+    B --> G[Security Center]
+    C --> H[AES-256-GCM Encryption]
+    D --> I[Authentication]
+    E --> J[Zero-Knowledge Storage]
+    F --> K[Authenticator Apps]
+    G --> L[Audit Logs]
+    G --> M[Stealth Mode]
+```
+
+---
+
+## 🚀 Installation Guide
+
+### 1. **Clone the Repository**
+
+```bash
+git clone https://github.com/aadii-chavan/CypherVault.git
+cd CypherVault
+```
+
+### 2. **Setup Environment Variables**
+
+Copy the example environment file and update with your Firebase config:
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` with your Firebase project settings.
+
+### 3. **Install Dependencies**
+
+```bash
+npm install
+# or
+yarn install
+```
+
+### 4. **Start the Development Server**
+
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+The app will be available at `http://localhost:5173` (default).
+
+---
+
+## 📝 Usage Instructions
+
+1. **Sign Up / Log In**: Create an account or log in with your credentials.
+2. **Set Your Password**: Your vault key is derived from your account password.
+3. **Add Passwords**: Store, edit, and organize your credentials securely.
+4. **Enable 2FA**: Add an extra layer of security with TOTP.
+5. **Use Security Center**: Monitor audit logs, check for breaches, and manage trusted devices.
+6. **Lock/Unlock Vault**: Vault auto-locks after inactivity; unlock with your password.
+
+---
+
+## 🔌 API Documentation
+
+CypherVault is primarily a client-side app, but exposes limited API endpoints for advanced features.
+
+### **Base URL**
+```
+https://cypher-vault-project.web.app/api
+```
+
+### **Endpoints**
+
+#### **POST /api/check-password**
+Check password strength and breach status.
+
+#### **POST /api/rate-limit**
+Rate limiting for sensitive operations.
+
+---
+
+## ⚙️ Configuration
+
+- All configuration is managed via `.env` and Firebase Console.
+- Update `.env` for custom settings (see `.env.example`).
+
+Example `.env`:
+```env
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+```
+
+---
+
+## 🧰 Troubleshooting
+
+### Common Issues
+
+- **Login Problems**: Check Firebase config and internet connection.
+- **Vault Not Unlocking**: Ensure correct password; reset if forgotten.
+- **2FA Issues**: Sync device time; re-scan QR if needed.
+- **Deployment Errors**: Check Firebase CLI and permissions.
+
+### Debugging
+
+- Use browser dev tools for client-side errors.
+- Check Firebase Console for backend/auth issues.
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please fork the repo, create a feature branch, and submit a pull request. See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- **Firebase Team**: For secure backend infrastructure
+- **React Community**: For the robust UI framework
+- **OWASP**: For security best practices
+- **zxcvbn**: For password strength estimation
+- **Have I Been Pwned**: For breach checking API
+
+---
+
+## 📞 Support
+
+For support, questions, or feature requests:
+- **GitHub Issues**: [Create an issue](https://github.com/aadii-chavan/CypherVault/issues)
+- **Documentation**: Check this README and inline code comments
+- **Community**: Join discussions in the GitHub repository
+
+---
+
+<div align="center">
+
+**CypherVault - Your Security, Your Control**
+
+*Protect your digital life with confidence.*
+
+[![GitHub stars](https://img.shields.io/github/stars/aadii-chavan/CypherVault.svg?style=social&label=Star)](https://github.com/aadii-chavan/CypherVault)
+[![GitHub forks](https://img.shields.io/github/forks/aadii-chavan/CypherVault.svg?style=social&label=Fork)](https://github.com/aadii-chavan/CypherVault/fork)
+
+</div>
