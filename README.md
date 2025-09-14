@@ -102,18 +102,18 @@ CypherVault is a modern password manager designed for maximum security and priva
 
 ```mermaid
 graph TB
-    A[User Device] --> B[CypherVault Web App]
-    B --> C[Web Crypto API]
-    B --> D[Firebase Auth]
-    B --> E[Firestore (Encrypted Data)]
-    B --> F[TOTP/2FA]
-    B --> G[Security Center]
-    C --> H[AES-256-GCM Encryption]
-    D --> I[Authentication]
-    E --> J[Zero-Knowledge Storage]
-    F --> K[Authenticator Apps]
-    G --> L[Audit Logs]
-    G --> M[Stealth Mode]
+    A(User Device) --> B(CypherVault Web App)
+    B --> C(Web Crypto API)
+    B --> D(Firebase Auth)
+    B --> E(Firestore - Encrypted Data)
+    B --> F(TOTP/2FA)
+    B --> G(Security Center)
+    C --> H(AES-256-GCM Encryption)
+    D --> I(Authentication)
+    E --> J(Zero-Knowledge Storage)
+    F --> K(Authenticator Apps)
+    G --> L(Audit Logs)
+    G --> M(Stealth Mode)
 ```
 
 ---
